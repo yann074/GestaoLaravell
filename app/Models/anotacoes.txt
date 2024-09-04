@@ -1,0 +1,203 @@
+    > $sitecontato = SiteContato::where('nome', '<>', 'Joao')->orWhereIn('motivo_contato', 
+    [1,2])->Between('created_at', ['2020-08-01 00:00:00' , '2024-09-13 59:59:59'])->get();
+
+
+    WHERE NULL
+        -> Serve para verificar se existe valor nulo
+        EX: $sitecontato = SiteContato::whereNull('nome')->get()
+            => Como nao tem valor com o valor nulo, ele nao retorna nada, porem se tivesse ele 
+            retornaria
+
+    WHERE NOT NULL
+        -> Serve para verificar se existe valor que nao esteja vazio
+        EX: $sitecontato = SiteContato::whereNotNull('nome')->get()
+            => Como tem valor ele retornar todos os dados
+
+    WHERE DATE
+        -> Ele retornar valores de acordo a data identificada
+        EX: $sitecontato = SiteContato::whereDate('created_at', '2024-08-13')->get();
+
+    WHERE DAY
+        -> Ele retornar valores de acordo o dia identificada
+        EX: $sitecontato = SiteContato::whereDay('created_at', '13')->get();
+
+    WHERE MONTH
+        -> Ele retornar valores de acordo o mês identificada
+        EX: $sitecontato = SiteContato::whereMonth('created_at', '08')->get();
+
+    WHERE YEAR
+        -> Ele retornar valores de acordo o ano identificada
+        EX: $sitecontato = SiteContato::whereYear('created_at', '2024')->get();
+
+    WHERE TIME 
+        -> Ele retorna de acordo ao horário
+        EX: $sitecontato = SiteContato::whereTime('created_at','=', '18:46:00')->get();
+        -> Pode ser usado tanto com '<>', '<', '>';
+
+    WHERE COLUMN
+        -> Ele retorna os valores iguais de acordo as variáveis
+        EX: $sitecontato = SiteContato::whereColumn('created_at', 'updated_at')->get()
+        -> Pode ser usado tanto com '<>', '<', '>', sem isso ele considera como '=', pode ser
+            3 ou 2 parametros;
+
+    { $sitecontato = SiteContato::whereYear('created_at', '2024')->whereDay('created_at', '13')->get();  }
+
+    WHERE SEQUENCIA
+
+    $contacts = FormContact::where(
+        function($query){
+            $query->where('name', 'Jorge')->orWhere('name', 'Ana');
+        }
+    )->where(
+        function($query){
+            $query->whereIn('motive_id', [1,2])->orWhereBetween('id', [4,7]);
+    }
+    )->get();
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    CERTO
+    $contatos = SiteContato::where('nome', 'João')->orWhere('nome', 'Ana')->where(function($query){
+        $query->whereIn('motivo_contato', [1, 2])->orWhereBetween('id', [4,6]); 
+    })->get() 
+
+    ORDENAR REGISTRO
+        -> Ele ordena os valores 
+        EX: $sitecontato = SiteContato::orderBy('nome', 'asc')->get()
+            $sitecontato = SiteContato::orderBy('nome', 'desc')->get()
+
+    Fornecedor::whereIn('id', [1,2])->get()
+        
+COLECTIONS
+
+    FIRST
+        ->Tras o primeiro elemento do saves
+        EX: $sitecontato = SiteContato::first()
+    LAST
+        ->Tras o ultimo elemento do saves
+        EX: $contatos = SiteContato::where('id', '>', 3)->get()->last();
+    TOARRAY
+        ->Coleção se transforma em um array
+        EX: SiteContato::all()->toArray()
+    TOJSON
+        ->Coleção se transforma em um json
+        EX: SiteContato::all()->toJson()
+    PLUCK
+        ->Coleção para retornar apenas o inserido
+        EX: SiteContato::all()->pluck('email')
+        -> Para retonar apenas o email, pode por mais de um parametro
+
+        // EX: SiteContato::all()->pluck('email')->toJson();
+    
+    FIND
+        -> Find serve para buscar por um id especifico
+
+        // EX: $fornecedores = Fornecedor::find(2)
+    
+    FILL
+        -> Serve para alterar valores pelo tinker, ele precisa ser configurado o filleble, no caso 
+            está no fornecedor.php
+
+        // EX: $fornecedores->fill(['nome' => 'fornecedor 789', 'site' => 'fornecedor789.com.br', 'email' => 'contato12931@gmail.com'])
+
+    UPDATE 
+        -> Serve para atualizar dados
+
+        // EX: > Fornecedor::whereIn('id', [1,2])->update(['nome' => 'Fornecedor Teste',
+         'site' => 'testee.com.br'])
+            = 2
+
+        -> Nesse caso ele ja atualizou automaticamente no Banco de Dados
+    
+    DELETE 
+        -> Serve para deletar os dados direto no bd
+
+        // EX: $contato = SiteContato::find(2)  // $contato->delete()
+                Primeiro usa o find para            Depois deleta direto no bd
+                    definir qual apagar
+        //EX: SiteContato::where('id', 7)->delete();
+        //EX: SiteContato::destroy(2);
+        //EX: SiteContato::find(2)->delete();
+
+    DELETE SUAVE
+        -> Um delete que nao seja excluido na tabela, e faz uma com o nome deleted_at
+        TRAIT -> pedaço de codigo que é usado com include (Fornecedor) Herança Horizontal
+        Criação de migration, olha lá, e no Fornecedor, ve la para entender, tmj
+        > $fornecedor->delete()
+        = true
+
+        > $fornecedor = Fornecedor::find(2)
+        = null
+
+        PARA REALMENTE PAGAR USA O FORCE DELETE
+        //EX: $fornecedor->forceDelete()
+
+    RESTAURAR APAGADOS PELO SOFT DELETE
+        //EX: Fornecedor::withTrashed()
+        //EX: Fornecedor::withTrashed()->get()
+                    ->Esse ja mostra os dados
+                        que foram apagados pelo
+                        delete
+
+        Fornecedor::onlyTrashed()->get  //aparece apenas os dados removidos
+        $fornecedores[0]->restore()  //ele restaura os dados apagados suavemente
+
+
+    SEEDERS
+        ->Serve para enviar dados para as tabelas do banco de dados
+               => php artisan make:seeder FornecedorSeeder
+        
+        php artisan db:seed
+
+        VER O SIDEER
+
+        php artisan db:seed --class=SiteContatoSeeder //para enviar apenas a seeder 
+                                                        especifica
+
+    
+    FACTORY
+        -> serve para enviar uma porrada de dados para as tabelas
+        -> Ver SiteContatoFactory e SiteContatoSeeder
+
+        // php artisan make:factory SiteContatoFactory --model=SiteContato
+                                                            Model para indicar
+                                                        Quem está sendo relacionado
+
+            php artisan db:seed --class=SiteContatoSeeder
+    composer.json 
+    Require-dev
+    Faker
+      https://fakerphp.github.io/formatters/
+      https://fakerphp.github.io/locales/pt_BR/
+      https://fakerphp.github.io
+      https://github.com/fakerphp/faker
+
+      REQUEST
+
+      ->PARA REQUISIÇÕES
+
+      dd($request)
+      print_r($request->all()) //para recuperar o array do request
+
+      Request $request  // Ja do Laravel para fazer REQUISIÇÕES
+      Usa os name para definir na variavel, _token escondido no nome
+        @csrf
+    {{--é usado para gerar um token para o post (Esta no form_contato)--}}
+
+    Salvando no BD
+        ->Para salvar no bd usando o controller, basta ver o codigo ContatoController
+        https://www.php.net/manual/pt_BR/function.filter-var.php
+        https://laracasts.com/discuss/channels/laravel/filtering-request-input?page=0
+        https://getbootstrap.com/docs/5.0/forms/validation/
+        // TEM VALIDAÇÃO NA DOC DO LARAVEL
+
+    Old Inputs
+        -> Para se der erro, nao perder os dados ja colocados na requisiçao anterios
+        OLD, antigo
+        old()
+
+        value="{{old('nome')}}" no view 
+        form_contato.blade
+        
+
+        php artisan db:seed --class=MotivoContatoSeeder
