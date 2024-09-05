@@ -67,12 +67,22 @@ class ContatoController extends Controller
         //validate sabe que se n tiver redirect na função,
         //ele volta uma rota, consequentemente sobe para a de cima que tem
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'nome' => 'required|string|min:3|max:255|unique:site_contatos',
             'telefone' => 'required|string|max:15',
             'email' => 'required|email|max:255',
             'motivo_contato' => 'required|integer',
             'mensagem' => 'required|string|max:500',
+        ],
+        [
+            'nome.required' => 'O nome precisa ser preenchido',
+            'nome.min' => 'esse campo precisa ter :min caracteres',
+            'nome.unique' => 'esse nome ja existe',
+
+
+            'required' => 'o :attribute deve ser digitado'
         ]);
+
+        //daria para passar pra variaveis | e usar no array 
         SiteContato::create($request->all());
         return redirect()->route('site.index');
         

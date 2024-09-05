@@ -201,3 +201,19 @@ COLECTIONS
         
 
         php artisan db:seed --class=MotivoContatoSeeder
+
+Unique
+    -> Prévia para saber se ta salvo no bd ou nao (unique = uma só, pré-verificação)
+
+    unique:site_contatos (Nome igual o do bd)
+        =>ContatoController
+    fazer a unique na bd também
+    caso ouver duplicado na opção que botou, ele nao salva no banco de dados
+
+nome.required
+
+    ->para fazer com que tenha uma resposta de error automaticamente, basta criar um novo
+    array, e colococar o nome.required ou algumas das validações, e => com a mensagem de 
+    error
+
+    nome.unique = mensagem de eeror
