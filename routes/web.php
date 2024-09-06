@@ -12,12 +12,16 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [PrincipalController::class , 'principal'])
-->name('site.index')->
-middleware(LogAcessoMiddleware::class);
+    ->name('site.index')->
+    middleware(LogAcessoMiddleware::class);
 
-Route::get('/sobrenos', [SobreNosController::class ,'SobreNos'])->name('site.sobrenos');
+Route::get('/sobrenos', [SobreNosController::class ,'SobreNos'])
+    ->name('site.sobrenos');
+    //withoutMiddleware([LogAcessoMiddleware::class]) para nao usar o middleware
 
-Route::get('/contatoo', [ContatoController::class ,'Contato'])->name('site.contato');
+Route::get('/contatoo', [ContatoController::class ,'Contato'])
+    ->name('site.contato');
+    //assim que eu acessar ele vai ligar ao middleware para salvar o ip e a rota
 Route::post('/contatoo', [ContatoController::class ,'salvar'])->name('site.contato');
 
 /*Route::get('/contato/{nome}/{numero?}', function($nome, $numero = 90){

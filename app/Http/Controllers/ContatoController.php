@@ -67,6 +67,7 @@ class ContatoController extends Controller
         //validate sabe que se n tiver redirect na função,
         //ele volta uma rota, consequentemente sobe para a de cima que tem
         $request->validate([
+              //daria para passar pra variaveis e usar no array php 
             'nome' => 'required|string|min:3|max:255|unique:site_contatos',
             'telefone' => 'required|string|max:15',
             'email' => 'required|email|max:255',
@@ -82,7 +83,6 @@ class ContatoController extends Controller
             'required' => 'o :attribute deve ser digitado'
         ]);
 
-        //daria para passar pra variaveis | e usar no array 
         SiteContato::create($request->all());
         return redirect()->route('site.index');
         

@@ -217,3 +217,39 @@ nome.required
     error
 
     nome.unique = mensagem de eeror
+
+    php artisan migrate --path=database/migrations/2024_09_06_131540_create_log_acessos_table.php
+    
+
+MIDDLEWARE 
+    ->para usar dados ao se acessados,Ver LogAcessoMiddleware | migration com o log | LogAcesso
+        ele salvou o ip e as rotas no horario acessado
+        Os middlewares ficam salvos diretamente nas rotas;
+
+        php artisan route:list -v // para ter todas as rotas e vai indicar quais estão com
+                                  // middlewares
+
+         um middleware é um tipo de filtro que intercepta as requisições 
+         HTTP feitas à aplicação. Ele pode realizar tarefas como autenticação, 
+         registro de logs, verificação de permissões, entre outras, antes que a 
+         requisição alcance o controlador.
+
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->append(LogAcessoMiddleware::class);
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();
+
+    ISSO SERVE PARA USAR O MIDDLEWARE, NESSE CASO PRA LOGS, PARA TODAS AS ROTAS
+    
+
+    ver documentação;
+    https://laravel.com/docs/11.x/middleware
